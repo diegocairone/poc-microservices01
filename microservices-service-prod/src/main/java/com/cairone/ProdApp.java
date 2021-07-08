@@ -19,7 +19,7 @@ public class ProdApp {
 		SpringApplication.run(ProdApp.class, args);
 	}
 
-	@GetMapping("/api/sum")
+	@GetMapping("/api/prod")
 	public ResponseEntity<Response> productory(long a, long b) {
 	    Long result = a * b;
 	    log.info("Productory of {} * {} = {}", a, b, result);

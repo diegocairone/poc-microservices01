@@ -10,6 +10,11 @@ import org.springframework.context.annotation.Bean;
 @EnableEurekaClient
 @SpringBootApplication
 public class EdgeServerApp {
+    
+    // To add Swagger see: 
+    // https://piotrminkowski.com/2020/02/20/microservices-api-documentation-with-springdoc-openapi/
+    // and
+    // https://stackoverflow.com/questions/66953605/spring-cloud-gateway-and-springdoc-openapi-integration
 
 	public static void main(String[] args) {
 		SpringApplication.run(EdgeServerApp.class, args);
@@ -18,11 +23,20 @@ public class EdgeServerApp {
 	@Bean
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("sumModule", r -> r.path("/api/sum/**")
-                        .uri("lb://SUM-SERVICE"))
-
-                .route("prodModulo", r -> r.path("/api/prod/**")
-                        .uri("lb://PROD-SERVICE"))
+                .route("sum-service", r -> r
+                        .path("/sum/**")
+                        .filters(f -> f.rewritePath(
+                                "/sum", 
+                                "/api/sum"))
+                        .uri("lb://SUM-SERVICE")
+                )
+                .route("prod-service", r -> r
+                        .path("/prod/**")
+                        .filters(f -> f.rewritePath(
+                                "/prod", 
+                                "/api/prod"))
+                        .uri("lb://PROD-SERVICE")
+                )
                 .build();
     }
 }

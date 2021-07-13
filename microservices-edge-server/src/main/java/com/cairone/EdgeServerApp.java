@@ -16,6 +16,8 @@ public class EdgeServerApp {
     // and
     // https://stackoverflow.com/questions/66953605/spring-cloud-gateway-and-springdoc-openapi-integration
 
+    // https://oril.co/blog/spring-cloud-gateway-security-with-jwt/
+    
 	public static void main(String[] args) {
 		SpringApplication.run(EdgeServerApp.class, args);
 	}
@@ -25,15 +27,24 @@ public class EdgeServerApp {
         return builder.routes()
                 .route("sum-service", r -> r
                         .path("/sum/**")
-                        .filters(f -> f.rewritePath("/sum(?<segment>/?.*)", "$\\{segment}"))
+                        .filters(f -> f
+                            .rewritePath("/sum(?<segment>/?.*)", "$\\{segment}")
+                            //.filters(filterFactory.apply()).removeRequestHeader("Cookie")
+                        )
                         .uri("lb://SUM-SERVICE")
                 )
                 .route("prod-service", r -> r
                         .path("/prod/**")
-                        .filters(f -> f.rewritePath("/prod(?<segment>/?.*)", "$\\{segment}"))
+                        .filters(f -> f
+                            .rewritePath("/sum(?<segment>/?.*)", "$\\{segment}")
+                            //.filters(filterFactory.apply()).removeRequestHeader("Cookie")
+                        )
                         .uri("lb://PROD-SERVICE")
                 )
                 .build();
     }
-	
+	/*
+	@Autowired
+	private TokenRelayGatewayFilterFactory filterFactory;
+	*/
 }
